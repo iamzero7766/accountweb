@@ -1,30 +1,73 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import LoginView from "../views/login/LoginView";
+import addView from "../views/addView/AddRecord";
+import DetailInfo from "../views/homePage/DetailInfo";
+import ChartInfo from "../views/homePage/ChartInfo";
+import ForumInfo from "../views/homePage/ForumInfo";
+import PersonSet from "../views/homePage/PersonSet";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "home",
-    component: HomeView,
+    name: "LoginView",
+    component: LoginView,
   },
   {
-    path: "/about",
-    name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
+    path: "/LoginView",
+    name: "LoginView",
+    component: LoginView,
+  },
+  {
+    path: "/addView",
+    name: "addView",
+    component: addView,
+  },
+  {
+    path: "/HomeView",
+    name: "HomeView",
+    component: HomeView,
+    children: [
+      {
+        path: "/DetailInfo",
+        name: "DetailInfo",
+        component: DetailInfo,
+      },
+      {
+        path: "/ChartInfo",
+        name: "ChartInfo",
+        component: ChartInfo,
+      },
+      {
+        path: "/ForumInfo",
+        name: "ForumInfo",
+        component: ForumInfo,
+      },
+      {
+        path: "/PersonSet",
+        name: "PersonSet",
+        component: PersonSet,
+      },
+    ],
   },
 ];
 
 const router = new VueRouter({
-  mode: "history",
-  base: process.env.BASE_URL,
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.path != "/LoginView") {
+    if (localStorage.getItem("userKey")) {
+      next();
+    } else {
+      next({ name: "LoginView" });
+    }
+  }
+  next();
 });
 
 export default router;
