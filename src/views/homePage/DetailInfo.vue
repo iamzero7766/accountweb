@@ -41,31 +41,28 @@
       </div>
     </div>
     <div class="table-view">
-      <el-timeline>
-        <el-timeline-item
-          v-for="item in tableData"
-          :key="item.time"
-          :timestamp="item.time"
-          placement="top"
-        >
-          <el-card>
-            <div
-              v-for="(element, index) in item.children"
-              :key="index"
-              class="card-item"
-            >
-              <div class="card-image">
-                <!-- <i class="icon iconfont icon-travel"></i> -->
-                <svg class="icon" aria-hidden="true">
-                  <use xlink:href="#icon-travel"></use>
-                </svg>
-              </div>
+      <div v-for="item in tableData" :key="item.time" class="table-item-view">
+        <div class="date-view">
+          <div>{{ item.time }}</div>
+          <div>
+            {{ item.income ? "收入：" + item.income : "" }}
+            {{ item.pay ? "支出：" + item.pay : "" }}
+          </div>
+        </div>
+        <div class="detail-view">
+          <div
+            class="detail-item-view"
+            v-for="(element, index) in item.children"
+            :key="index"
+          >
+            <svg class="icon" aria-hidden="true" v-html="element.icon"></svg>
+            <div class="detail-name-view">
               <div class="card-remark">{{ element.remark }}</div>
               <div class="card-cash">{{ element.value }}</div>
             </div>
-          </el-card>
-        </el-timeline-item>
-      </el-timeline>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -92,10 +89,19 @@ export default {
       var tableData = [];
       for (var i = 0; i < 30; i++) {
         var data = {
-          time: `2022/11/${i + 1}`,
+          time: `11月${i + 1}日`,
+          pay: `${6 * i}`,
           children: [
-            { icon: "", remark: `记录——1`, value: `${3 * i}` },
-            { icon: "", remark: `记录——2`, value: `${3 * i}` },
+            {
+              icon: `<use xlink:href="#icon-cultivate"></use>`,
+              remark: `记录——1`,
+              value: `${3 * i}`,
+            },
+            {
+              icon: `<use xlink:href="#icon-digital"></use>`,
+              remark: `记录——2`,
+              value: `${3 * i}`,
+            },
           ],
         };
         tableData.push(data);
@@ -179,27 +185,48 @@ export default {
     overflow-y: auto;
     box-sizing: border-box;
     padding: 0 10px;
-    ul {
-      padding: 0;
-    }
-    .card-item {
+    color: #888;
+    .table-item-view {
       width: 100%;
-      height: 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #ddd;
-    }
-    .card-image {
-      width: 40px;
-      height: 40px;
-      .icon {
-        width: 40px;
-        height: 40px;
+      .date-view {
+        width: 100%;
+        height: 20px;
+        display: flex;
+        font-size: 12px;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #dcdcdc;
       }
-    }
-    .el-card__body {
-      padding: 0 10px;
+      .detail-view {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0 5px;
+        .detail-item-view {
+          width: 100%;
+          height: 56px;
+          display: flex;
+          align-items: center;
+        }
+        .detail-item-view:nth-last-child(1) .detail-name-view {
+          border-bottom: 0;
+        }
+        .icon {
+          width: 40px;
+          height: 40px;
+          background: #ddd;
+          border-radius: 20px;
+        }
+        .detail-name-view {
+          flex: 1;
+          height: 100%;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          box-sizing: border-box;
+          padding: 0 5px;
+          border-bottom: 1px solid #e6e6e6;
+        }
+      }
     }
   }
 }
