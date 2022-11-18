@@ -1,9 +1,16 @@
 <template>
-  <div>论坛</div>
+  <div></div>
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {};
+  },
+  methods: {},
+  created() {},
+  mounted() {},
+};
 </script>
 
-<style></style>
+<style lang="scss"></style>

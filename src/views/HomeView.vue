@@ -1,5 +1,8 @@
 <template>
   <div class="home-view-style">
+    <div class="router-view">
+      <router-view></router-view>
+    </div>
     <el-menu
       :default-active="activeIndex"
       class="menu-style"
@@ -16,7 +19,6 @@
       <el-menu-item index="4">论坛</el-menu-item>
       <el-menu-item index="5">设置</el-menu-item>
     </el-menu>
-    <router-view></router-view>
   </div>
 </template>
 
@@ -58,12 +60,18 @@ export default {
 .home-view-style {
   width: 100%;
   height: 100%;
+  .router-view {
+    width: 100%;
+    height: calc(100% - 60px);
+  }
   .menu-style {
     width: 100%;
     display: flex;
+    background-color: var(--theme_bg_color);
     .el-menu-item {
       flex: 1;
       text-align: center;
+      color: #222;
     }
   }
 }
