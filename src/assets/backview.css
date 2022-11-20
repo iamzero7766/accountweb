@@ -1,0 +1,9 @@
+
+:root {
+  /* 背景色 */
+  --theme_bg_color: #f0d564;
+  /* 按钮颜色 */
+  --theme_button_color: #9cc6a2;
+  /* 卡片颜色 */
+  --theme_card_color: #CFE9CE;
+}
