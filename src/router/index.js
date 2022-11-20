@@ -13,7 +13,11 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
+<<<<<<< HEAD
     name: "/",
+=======
+    name: "LoginView",
+>>>>>>> d218ca58b74637f76bfbaf38cc49f3eb48481e63
     component: LoginView,
   },
   {
