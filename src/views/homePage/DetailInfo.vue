@@ -27,7 +27,12 @@
     </div>
     <div class="icon-view">
       <div class="icon-list-view">
-        <div v-for="item in iconList" :key="item.value" class="icon-item-view">
+        <div
+          v-for="item in iconList"
+          :key="item.value"
+          class="icon-item-view"
+          @click="changeIcon(item)"
+        >
           <div
             class="image-view"
             :style="
@@ -77,10 +82,10 @@ export default {
       pay_month: 0,
       tableData: [],
       iconList: [
-        { icon: "icon_1", label: "账单", value: "1" },
-        { icon: "icon_2", label: "预算", value: "2" },
-        { icon: "icon_3", label: "资产", value: "3" },
-        { icon: "icon_4", label: "更多", value: "4" },
+        { icon: "icon_1", label: "账单", value: "1", path: "billPage" },
+        { icon: "icon_2", label: "预算", value: "2", path: "budgetPage" },
+        { icon: "icon_3", label: "资产", value: "3", path: "assetsPage" },
+        { icon: "icon_4", label: "更多", value: "4", path: "morePage" },
       ],
     };
   },
@@ -108,6 +113,14 @@ export default {
       }
       this.tableData = tableData;
       console.log(this.tableData);
+    },
+
+    // 切换图标
+    changeIcon(item) {
+      console.log(item);
+      this.$router.push({
+        path: item.path,
+      });
     },
   },
   created() {
