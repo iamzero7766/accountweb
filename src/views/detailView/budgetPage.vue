@@ -2,7 +2,7 @@
   <div class="budget-page-view">
     <tab-header :tab-name="tabName" :router-name="routerName"></tab-header>
     <div class="budget-all-view">
-      <div class="chart-all" ref="chartAll"></div>
+      <div class="chart-all" id="chartAll"></div>
       <div class="content-all">
         <div class="content-child-item">
           <div>{{ spendAll > budgetAll ? "超出预算：" : "剩余预算：" }}</div>
@@ -23,12 +23,8 @@
       </div>
     </div>
     <div class="budget-content-view">
-      <div
-        v-for="(item, index) in budgetList"
-        :key="item.name"
-        class="budget-item"
-      >
-        <div class="budget-left-item" :id="'chartid' + index"></div>
+      <div v-for="item in budgetList" :key="item.name" class="budget-item">
+        <div class="budget-left-item" :id="item.id"></div>
         <div class="budget-right-item">
           <div class="content-child-item">
             <div>
@@ -54,11 +50,15 @@
       </div>
     </div>
     <div class="edit-button-view">
-      <el-button type="" plain class="button-style">
+      <el-button type="" plain class="button-style" @click="editBudget">
         <i class="el-icon-edit-outline"></i>
         编辑预算
       </el-button>
     </div>
+
+    <el-drawer title="总预算" :visible.sync="drawerVisible" direction="btt">
+      <el-input v-model="budgetAll" placeholder=""></el-input>
+    </el-drawer>
   </div>
 </template>
 
@@ -74,28 +74,28 @@ export default {
       budgetAll: 2500,
       spendAll: 1800,
       budgetList: [
-        { name: "餐饮", budget: 1300, spend: 1000 },
-        { name: "娱乐", budget: 500, spend: 0 },
-        { name: "休闲", budget: 700, spend: 800 },
+        { id: "chart1", name: "餐饮", budget: 1300, spend: 1000 },
+        { id: "chart2", name: "娱乐", budget: 500, spend: 0 },
+        { id: "chart3", name: "休闲", budget: 700, spend: 800 },
       ],
+      drawerVisible: false,
     };
   },
   mounted() {
     console.log(111);
-    this.getAllBudget();
+    this.getBudgetData(this.spendAll, this.budgetAll, "chartAll");
     this.getListBudget();
   },
   methods: {
     // 总预算
-    getAllBudget() {
-      const spendNum = 1800;
+    getBudgetData(spendNum, budgetAll, refName) {
       var spendData;
       var extraData;
       var textData;
       var data = [];
-      if (spendNum > this.budgetAll) {
+      if (spendNum > budgetAll) {
         spendData = {
-          value: this.budgetAll,
+          value: budgetAll,
           name: "支出",
         };
         extraData = {
@@ -105,31 +105,35 @@ export default {
         textData = "已超出";
         data.push(extraData);
         data.push(spendData);
-        this.setChart("chartAll", data, textData, true);
+        this.setChart(refName, data, textData, true);
       } else {
         spendData = {
           value: spendNum,
           name: "支出",
         };
         extraData = {
-          value: this.budgetAll - spendNum,
+          value: budgetAll - spendNum,
           name: "剩余",
         };
         data.push(extraData);
         data.push(spendData);
         textData = `剩余${this.returnPercent(
-          (this.budgetAll - spendNum) / this.budgetAll
+          (budgetAll - spendNum) / budgetAll
         )}%`;
-        this.setChart("chartAll", data, textData, false);
+        this.setChart(refName, data, textData, false);
       }
     },
 
     // 分类预算
-    getListBudget() {},
+    getListBudget() {
+      this.budgetList.forEach((item) => {
+        this.getBudgetData(item.spend, item.budget, item.id);
+      });
+    },
 
     // 预算图
     setChart(refName, data, text, isOver = false) {
-      var chartDom = this.$refs[refName];
+      var chartDom = document.getElementById(refName);
       var myChart = echarts.init(chartDom);
       var option = {
         title: {
@@ -139,6 +143,7 @@ export default {
           left: "center",
           textStyle: {
             color: isOver ? "red" : "#808080",
+            fontSize: 14,
           },
         },
         tooltip: {
@@ -175,6 +180,11 @@ export default {
     // 计算百分比
     returnPercent(value) {
       return Math.round(value * 10000) / 100;
+    },
+
+    // 点击编辑预算
+    editBudget() {
+      this.drawerVisible = true;
     },
   },
 };
