@@ -56,8 +56,71 @@
       </el-button>
     </div>
 
-    <el-drawer title="总预算" :visible.sync="drawerVisible" direction="btt">
-      <el-input v-model="budgetAll" placeholder=""></el-input>
+    <el-drawer
+      title="编辑预算"
+      :visible.sync="drawerVisible"
+      direction="btt"
+      size="70%"
+      class="budget-dialog"
+    >
+      <div class="row-all">
+        <span class="span-text">总预算：</span>
+        <el-input
+          class="input-text"
+          v-model="editBudgetAll"
+          placeholder=""
+        ></el-input>
+      </div>
+      <div class="table-all">
+        <el-table :data="budgetTableData" height="100%">
+          <el-table-column label="类别" prop="">
+            <template slot="header" slot-scope="scope">
+              类别
+              <el-button
+                type="primary"
+                icon="el-icon-plus"
+                style="margin-left: 5px"
+                circle
+                plain
+                size="mini"
+                @click="addRow(scope.row)"
+              ></el-button>
+            </template>
+            <template slot-scope="scope">
+              <el-select v-model="scope.row.name" size="small">
+                <el-option
+                  v-for="item in typeList"
+                  :key="item.value"
+                  :label="item.value"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </template>
+          </el-table-column>
+          <el-table-column label="预算" prop="">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.budget" size="small"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column label="" prop="" width="60">
+            <template slot-scope="scope">
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                circle
+                size="small"
+                @click="deleteRow(scope.row)"
+              ></el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="button-all">
+        <el-button @click="submitBudget" size="small" type="primary"
+          >确定</el-button
+        >
+        <el-button @click="cancelSubmit" size="small" plain>取消</el-button>
+      </div>
     </el-drawer>
   </div>
 </template>
@@ -65,6 +128,7 @@
 <script>
 import TabHeader from "@/components/TabHeader.vue";
 import * as echarts from "echarts";
+import iconListData from "@/utils/data/iconList.js";
 export default {
   components: { TabHeader },
   data() {
@@ -79,6 +143,9 @@ export default {
         { id: "chart3", name: "休闲", budget: 700, spend: 800 },
       ],
       drawerVisible: false,
+      budgetTableData: [],
+      typeList: iconListData,
+      editBudgetAll: 0,
     };
   },
   mounted() {
@@ -185,7 +252,23 @@ export default {
     // 点击编辑预算
     editBudget() {
       this.drawerVisible = true;
+      this.editBudgetAll = this.budgetAll;
+      this.budgetTableData = JSON.parse(JSON.stringify(this.budgetList));
     },
+
+    // 删除某一行
+    deleteRow(row) {
+      console.log(row);
+    },
+    // 新增某一行
+    addRow() {
+      this.budgetTableData.push({ id: "", name: "", budget: 0, spend: 0 });
+    },
+
+    // 点击确定
+    submitBudget() {},
+    // 点击取消
+    cancelSubmit() {},
   },
 };
 </script>
@@ -264,6 +347,37 @@ export default {
     height: 40px;
     .button-style {
       width: 100%;
+    }
+  }
+  .budget-dialog {
+    .row-all {
+      width: 100%;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      padding: 0 10px;
+    }
+    .span-text {
+      width: 70px;
+    }
+    .input-text {
+      width: calc(100% - 70px);
+    }
+    .el-table .cell {
+      text-align: center;
+    }
+    .table-all {
+      width: 100%;
+      height: calc(100% - 92px);
+    }
+    .button-all {
+      width: 100%;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 }
